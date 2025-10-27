@@ -270,7 +270,7 @@ def generate_visualizations(cluster_data, timeline_data):
     plt.ylabel('Density', fontsize=12)
     plt.title(f'Job Duration Distribution - Cluster {largest_cluster}\n(n={len(largest_cluster_data)} applications)', 
               fontsize=14, fontweight='bold')
-    plt.yscale('log')  # Use log scale to handle skewed duration data
+    plt.xscale('log')  # Use log scale on x-axis to handle skewed duration data
     plt.grid(alpha=0.3)
     plt.legend()
     plt.tight_layout()
@@ -282,8 +282,8 @@ def regenerate_visualizations():
     """Regenerate visualizations from existing CSV files"""
     try:
         # Read existing CSV files and convert data types
-        cluster_df = pd.read_csv('problem2_cluster_summary.csv')
-        timeline_df = pd.read_csv('problem2_timeline.csv')
+        cluster_df = pd.read_csv('data/output/problem2_cluster_summary.csv')
+        timeline_df = pd.read_csv('data/output/problem2_timeline.csv')
         
         # Convert timestamp strings to datetime objects for duration calculation
         timeline_df['start_time'] = pd.to_datetime(timeline_df['start_time'])
