@@ -215,7 +215,7 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 22 \
   --cidr ${MY_LAPTOP_IP}/32 \
-  --region $AWS_REGION > /dev/null
+  --region $AWS_REGION > /dev/null 2>&1 || log_warn "SSH rule may already exist (this is OK)"
 log_success "SSH access from laptop enabled"
 
 # Allow Spark Web UI from EC2
@@ -235,7 +235,7 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 8080-8081 \
   --cidr ${MY_LAPTOP_IP}/32 \
-  --region $AWS_REGION > /dev/null
+  --region $AWS_REGION > /dev/null 2>&1 || log_warn "Web UI rule may already exist (this is OK)"
 log_success "Spark Web UI access from laptop enabled"
 
 # Allow Spark Application UI from EC2
@@ -255,7 +255,7 @@ aws ec2 authorize-security-group-ingress \
   --protocol tcp \
   --port 4040 \
   --cidr ${MY_LAPTOP_IP}/32 \
-  --region $AWS_REGION > /dev/null
+  --region $AWS_REGION > /dev/null 2>&1 || log_warn "Application UI rule may already exist (this is OK)"
 log_success "Spark Application UI from laptop enabled"
 
 ################################################################################

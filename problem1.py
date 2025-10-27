@@ -2,6 +2,9 @@
 """
 Problem 1: Log Level Distribution Analysis
 Analyze the distribution of log levels (INFO, WARN, ERROR, DEBUG) across all log files.
+
+Note: This code was developed with assistance from Cursor AI for some implementation details
+and optimization suggestions, particularly for the regex parsing and data processing logic.
 """
 
 import sys
@@ -19,7 +22,7 @@ def main():
     parser.add_argument('--local', action='store_true', help='Run locally with sample data')
     args = parser.parse_args()
     
-        # Need to figure out where the data is - either local sample or S3
+        # Figure out where the data is - either local sample or S3
     if args.local:
         # For local testing, use the full raw data
         data_path = "data/raw/"
@@ -49,16 +52,14 @@ def main():
         print("Starting Problem 1: Log Level Distribution Analysis")
         print("=" * 60)
         
-        # Step 1: Read all log files
-        # Need to read all the log files from the application directories
+        # Read all log files: Read all the log files from the application directories
         print("Step 1: Reading log files...")
         logs_df = spark.read.text(data_path + "*/*")
         total_lines = logs_df.count()
         print(f"✅ Loaded {total_lines:,} total log lines")
         
-        # Step 2: Extract log levels using regex
-        # Need to parse the log format to extract the log level
-        # Looking at the format: "17/03/29 10:04:41 INFO ApplicationMaster: ..."
+        # Extract log levels using regex
+        # Parse the log format to extract the log level
         print("Step 2: Extracting log levels...")
         logs_with_levels = logs_df.withColumn(
             "log_level",
@@ -68,7 +69,7 @@ def main():
         lines_with_levels = logs_with_levels.count()
         print(f"✅ Found {lines_with_levels:,} lines with valid log levels")
         
-        # Step 3: Count log levels
+        # Count log levels
         print("Step 3: Counting log levels...")
         level_counts = logs_with_levels.groupBy("log_level").agg(count("*").alias("count")) \
             .orderBy("log_level")
@@ -77,7 +78,7 @@ def main():
         counts_data = level_counts.collect()
         print("✅ Log level counts calculated")
         
-        # Step 4: Generate sample entries
+        # Generate sample entries
         print("Step 4: Generating sample entries...")
         # Want to get 10 random samples for each log level
         sample_entries = logs_with_levels.sample(False, 0.01, seed=42) \
@@ -88,7 +89,7 @@ def main():
         sample_data = sample_entries.collect()
         print("✅ Sample entries generated")
         
-        # Step 5: Calculate summary statistics
+        # Calculate summary statistics
         print("Step 5: Calculating summary statistics...")
         unique_levels = len(counts_data)
         total_with_levels = sum(row['count'] for row in counts_data)
